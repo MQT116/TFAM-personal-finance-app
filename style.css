@@ -99,6 +99,7 @@ h1, h2 { font-family: "Manrope", sans-serif; letter-spacing: -.04em; }
 h1 { margin: 0; font-size: clamp(28px, 3vw, 40px); }
 h2 { margin: 4px 0 0; font-size: 21px; }
 .heading-total { margin-left: 8px; color: var(--money-color); font-size: .72em; letter-spacing: -.02em; }
+#assetHeadingTotal { color: var(--income-color); }
 #liabilityHeadingTotal { color: var(--debt-color); }
 .topbar-actions { display: flex; gap: 10px; align-items: center; }
 .primary-button, .small-button, .icon-button {
@@ -232,6 +233,7 @@ h2 { margin: 4px 0 0; font-size: 21px; }
 .summary-tile span, .summary-tile strong { display: block; }
 .summary-tile span { color: var(--muted); font-size: 11px; }
 .summary-tile strong { margin-top: 6px; color: var(--money-color); font: 800 25px "Manrope"; }
+.asset-summary strong { color: var(--income-color); }
 .liability-summary strong, #debtSummary .summary-tile strong { color: var(--debt-color); }
 .summary-tile small { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; }
 .budget-board, .goal-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
@@ -283,7 +285,14 @@ h2 { margin: 4px 0 0; font-size: 21px; }
 }
 .account-row-name { min-width: 0; font-size: 13px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .account-row-amount { color: var(--money-color); font: 800 14px "Manrope"; }
-.account-panel:last-child .account-row-amount, .account-panel:last-child .account-category-header span { color: var(--debt-color); }
+#assetList .account-row-name,
+#assetList .account-row-amount,
+#assetList .account-category-header strong,
+#assetList .account-category-header span { color: var(--income-color); }
+#liabilityList .account-row-name,
+#liabilityList .account-row-amount,
+#liabilityList .account-category-header strong,
+#liabilityList .account-category-header span { color: var(--debt-color); }
 .category-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
 .category-card {
   padding: 18px; border-radius: 18px; background: var(--paper);
