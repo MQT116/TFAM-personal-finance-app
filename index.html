@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f1e8">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Northstar">
+  <meta name="description" content="A private, installable personal finance planner for budgets, expenses, goals, debt, and net worth.">
+  <title>Northstar | Personal Finance Planner</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="appSidebar" aria-label="App menu">
+      <a class="brand" href="#dashboard" aria-label="Northstar home">
+        <span class="brand-mark" id="brandMark"><span id="brandInitial">N</span><img id="brandLogo" alt=""></span>
+        <span id="brandName">northstar</span>
+      </a>
+
+      <nav class="nav-list" aria-label="Primary navigation">
+        <button class="nav-item active" data-view="dashboard">
+          <span class="nav-icon">01</span> Overview
+        </button>
+        <button class="nav-item" data-view="income">
+          <span class="nav-icon">02</span> Income
+        </button>
+        <button class="nav-item" data-view="budgets">
+          <span class="nav-icon">03</span> Budget
+        </button>
+        <button class="nav-item" data-view="expenses">
+          <span class="nav-icon">04</span> Expenses
+        </button>
+        <button class="nav-item" data-view="debt">
+          <span class="nav-icon">05</span> Debt payoff
+        </button>
+        <button class="nav-item" data-view="savings">
+          <span class="nav-icon">06</span> Savings
+        </button>
+        <button class="nav-item" data-view="retirement">
+          <span class="nav-icon">07</span> Retirement
+        </button>
+        <button class="nav-item" data-view="networth">
+          <span class="nav-icon">08</span> Net worth
+        </button>
+        <button class="nav-item" data-view="bills">
+          <span class="nav-icon">09</span> Bills
+        </button>
+        <button class="nav-item" data-view="reports">
+          <span class="nav-icon">10</span> Reports
+        </button>
+        <button class="nav-item" data-view="settings">
+          <span class="nav-icon">11</span> Settings
+        </button>
+        <button class="nav-item" data-view="calculator">
+          <span class="nav-icon">12</span> Calculator
+        </button>
+      </nav>
+
+      <div class="side-note">
+        <span class="eyebrow">Money mindset</span>
+        <p>Small, steady choices make a remarkably good plan.</p>
+      </div>
+
+      <button class="install-app-button" id="installApp" type="button" hidden>
+        <span class="install-icon">+</span>
+        <span><strong>Install this app</strong><small>Add Northstar to your home screen</small></span>
+      </button>
+
+      <div class="profile">
+        <div class="avatar">MT</div>
+        <div>
+          <strong>My finances</strong>
+          <span>Private on this device</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" type="button" aria-label="Open navigation" aria-controls="appSidebar" aria-expanded="false">Menu</button>
+        <div>
+          <p class="date-label" id="currentDate"></p>
+          <h1 id="pageTitle">Good morning</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="primary-button" id="openTransaction">
+            <span>＋</span> Add transaction
+          </button>
+        </div>
+      </header>
+
+      <section class="view active" id="dashboardView">
+        <div class="hero-grid" data-dashboard-zone="hero">
+          <article class="net-worth-card" data-widget="networth">
+            <div class="card-heading">
+              <div>
+                <span class="eyebrow light">Total net worth</span>
+                <div class="hero-value" id="netWorthValue">$0</div>
+              </div>
+              <span class="trend-pill" id="netWorthTrend">↑ 0%</span>
+            </div>
+            <div class="net-worth-chart" id="netWorthChart" aria-label="Six month net worth trend"></div>
+            <div class="chart-labels">
+              <span>Jan</span><span>Feb</span><span>Mar</span>
+              <span>Apr</span><span>May</span><span>Jun</span>
+            </div>
+          </article>
+
+          <article class="card snapshot-card" data-widget="snapshot">
+            <div class="card-title-row">
+              <div>
+                <span class="eyebrow">Monthly snapshot</span>
+                <h2 id="monthPlanTitle">Monthly plan</h2>
+              </div>
+              <span class="status-dot">On track</span>
+            </div>
+            <div class="snapshot-row">
+              <span><i class="dot income"></i>Income</span>
+              <strong id="incomeValue">$0</strong>
+            </div>
+            <div class="snapshot-row">
+              <span><i class="dot expense"></i>Spent</span>
+              <strong id="spentValue">$0</strong>
+            </div>
+            <div class="snapshot-row">
+              <span><i class="dot saved"></i>Saved</span>
+              <strong id="savedValue">$0</strong>
+            </div>
+            <div class="savings-rate">
+              <div class="rate-copy">
+                <span>Savings rate</span>
+                <strong id="savingsRate">0%</strong>
+              </div>
+              <div class="progress-track"><div id="savingsProgress"></div></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="section-heading dashboard-plan-heading">
+          <div>
+            <span class="eyebrow">Your plan</span>
+            <h2>Make this month count</h2>
+          </div>
+          <button class="text-button" data-target="budgets">View all budgets -></button>
+        </div>
+
+        <div class="dashboard-grid" data-dashboard-zone="plan">
+          <article class="card budget-card" data-widget="budget">
+            <div class="card-title-row">
+              <div>
+                <span class="eyebrow">Spending plan</span>
+                <h2>Budget pulse</h2>
+              </div>
+              <div class="ring" id="budgetRing"><span id="budgetPercent">0%</span></div>
+            </div>
+            <div id="budgetPreview" class="budget-list"></div>
+          </article>
+
+          <article class="card goals-card" data-widget="goals">
+            <div class="card-title-row">
+              <div>
+                <span class="eyebrow">Future you</span>
+                <h2>Savings goals</h2>
+              </div>
+              <button class="small-button" id="openGoal">＋ New goal</button>
+            </div>
+            <div id="goalPreview" class="goal-preview"></div>
+          </article>
+        </div>
+
+        <article class="card recent-card" data-widget="recent">
+          <div class="card-title-row">
+            <div>
+              <span class="eyebrow">Cash flow</span>
+              <h2>Recent activity</h2>
+            </div>
+            <button class="text-button" data-target="expenses">See all -></button>
+          </div>
+          <div class="transaction-list" id="recentTransactions"></div>
+        </article>
+      </section>
+
+      <section class="view" id="incomeView">
+        <div class="section-heading flush">
+          <div>
+            <span class="eyebrow">Money coming in</span>
+            <h2>Income tracking</h2>
+          </div>
+          <button class="primary-button" id="openIncome">+ Add income</button>
+        </div>
+        <div class="budget-summary" id="incomeSummary"></div>
+        <article class="card">
+          <div class="transaction-list full" id="incomeTransactions"></div>
+        </article>
+      </section>
+
+      <section class="view" id="expensesView">
+        <div class="section-heading flush">
+          <div>
+            <span class="eyebrow">Where money goes</span>
+            <h2>Monthly expense log</h2>
+          </div>
+          <button class="primary-button" id="openExpense">+ Add expense</button>
+        </div>
+        <div class="expense-log-toolbar">
+          <span class="eyebrow">Recurring checklist</span>
+          <button class="small-button" id="resetExpenseLog">Reset monthly statuses</button>
+        </div>
+        <article class="card">
+          <form class="expense-log-form" id="expenseLogForm">
+            <label>Expense name<input name="name" required placeholder="e.g. Rent"></label>
+            <label>Expected amount<input name="amount" type="number" min="0" step="0.01" placeholder="0.00"></label>
+            <label>Pay period<select name="payPeriod"><option value="first">1st Half of the Month</option><option value="second">2nd Half of the Month</option></select></label>
+            <button class="primary-button" id="expenseLogSubmit" type="submit">Add to log</button>
+            <button class="small-button edit-cancel" id="cancelExpenseLogEdit" type="button">Cancel</button>
+          </form>
+          <div class="expense-log-summary" id="expenseLogSummary"></div>
+          <div class="pay-period-totals">
+            <div><span>1st Half Remaining Unpaid</span><strong id="firstHalfTotal">$0</strong></div>
+            <div><span>2nd Half Remaining Unpaid</span><strong id="secondHalfTotal">$0</strong></div>
+          </div>
+          <div class="expense-log-list" id="expenseLogList"></div>
+        </article>
+        <div class="section-heading expense-categories-heading">
+          <div>
+            <span class="eyebrow">Spending analysis</span>
+            <h2>Expense categories</h2>
+          </div>
+        </div>
+        <div class="category-board" id="expenseCategories"></div>
+        <article class="card">
+          <div class="transaction-list full" id="expenseTransactions"></div>
+        </article>
+      </section>
+
+      <section class="view" id="budgetsView">
+        <div class="section-heading flush">
+          <div>
+            <span class="eyebrow">Monthly limits</span>
+            <h2>Budget planner</h2>
+          </div>
+          <button class="primary-button" id="openBudget">＋ Add budget</button>
+        </div>
+        <div class="budget-summary" id="budgetSummary"></div>
+        <div class="budget-board" id="budgetBoard"></div>
+      </section>
+
+      <section class="view" id="debtView">
+        <div class="section-heading flush">
+          <div>
+            <span class="eyebrow">Pay balances down</span>
+            <h2>Debt payoff tracker</h2>
+          </div>
+        </div>
+        <div class="budget-summary" id="debtSummary"></div>
+        <article class="card">
+          <form class="wide-inline-form" id="debtForm">
+            <label>Debt name<input name="name" required placeholder="Credit card"></label>
+            <label>Balance<input name="balance" type="number" min="0" step="0.01" required placeholder="0.00"></label>
+            <label>APR %<input name="apr" type="number" min="0" step="0.01" required placeholder="18.9"></label>
+            <label>Monthly payment<input name="payment" type="number" min="1" step="0.01" required placeholder="200"></label>
+            <button class="primary-button" id="debtSubmit" type="submit">Add debt</button>
+            <button class="small-button edit-cancel" id="cancelDebtEdit" type="button">Cancel</button>
+          </form>
+        </article>
+        <div class="debt-board" id="debtBoard"></div>
+      </section>
+
+      <section class="view" id="savingsView">
+        <div class="section-heading flush">
+          <div>
+            <span class="eyebrow">Build your reserves</span>
+            <h2>Savings goals</h2>
+          </div>
+          <button class="primary-button" id="openGoalPage">+ Add goal</button>
+        </div>
+        <article class="emergency-card">
+          <div>
+            <span class="eyebrow light">Emergency fund tracker</span>
+            <h2>Months of essential expenses covered</h2>
+            <div class="emergency-value"><strong id="emergencyMonths">0.0</strong><span>months</span></div>
+          </div>
+          <form id="emergencyForm">
+            <label>Fund balance<input name="balance" type="number" min="0" step="0.01" required></label>
+            <label>Monthly essentials<input name="expenses" type="number" min="1" step="0.01" required></label>
+            <button class="small-button" type="submit">Update fund</button>
+          </form>
+          <div class="emergency-progress"><div id="emergencyProgress"></div></div>
+          <p id="emergencyMessage"></p>
+        </article>
+        <div class="goal-board" id="goalBoard"></div>
+      </section>
+
+      <section class="view" id="retirementView">
+        <div class="section-heading flush">
+          <div>
+            <span class="eyebrow">Invest for later</span>
+            <h2>Retirement planning</h2>
+          </div>
+        </div>
+        <div class="retirement-grid">
+          <article class="card">
+            <form id="retirementForm">
+              <div class="form-row">
+                <label>Current age<input name="age" type="number" min="18" max="90" required></label>
+                <label>Retirement age<input name="retireAge" type="number" min="19" max="100" required></label>
+              </div>
+              <label>Current investments<input name="balance" type="number" min="0" step="100" required></label>
+              <label>Monthly contribution<input name="contribution" type="number" min="0" step="10" required></label>
+              <div class="form-row">
+                <label>Expected annual return %<input name="returnRate" type="number" min="0" max="20" step="0.1" required></label>
+                <label>Retirement target<input name="target" type="number" min="1" step="1000" required></label>
+              </div>
+              <button class="primary-button wide" type="submit">Update projection</button>
+            </form>
+          </article>
+          <article class="projection-card">
+            <span class="eyebrow light">Projected balance</span>
+            <strong id="retirementProjection">$0</strong>
+            <span id="retirementYears">0 years to invest</span>
+            <div class="progress-track"><div id="retirementProgress"></div></div>
+            <p id="retirementMessage"></p>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="networthView">
+        <div class="section-heading flush">
+          <div>
+            <span class="eyebrow">Financial position</span>
+            <h2>Net worth tracker</h2>
+          </div>
+        </div>
+
+        <div class="net-worth-summary">
+          <article class="summary-tile net-total">
+            <span>Net worth</span>
+            <strong id="netWorthPageTotal">$0</strong>
+            <small>Assets minus liabilities</small>
+          </article>
+          <article class="summary-tile liability-summary">
+            <span>Total assets</span>
+            <strong id="assetTotal">$0</strong>
+            <small id="assetCount">0 accounts</small>
+          </article>
+          <article class="summary-tile">
+            <span>Total liabilities</span>
+            <strong id="liabilityTotal">$0</strong>
+            <small id="liabilityCount">0 accounts</small>
+          </article>
+        </div>
+
+        <div class="account-grid">
+          <article class="card account-panel">
+            <div class="card-title-row">
+              <div>
+                <span class="eyebrow">What you own</span>
+                <h2>Assets <span class="heading-total" id="assetHeadingTotal">$0</span></h2>
+              </div>
+              <span class="account-badge asset">＋</span>
+            </div>
+            <form class="account-form" id="assetForm">
+              <label>Asset name<input name="name" required placeholder="e.g. Checking account"></label>
+              <label>Current value<input name="amount" type="number" min="0" step="0.01" required placeholder="0.00"></label>
+              <label>Category<select name="category"><option value="cash">Cash</option><option value="investments">Investments</option><option value="property">Property</option><option value="crypto">Crypto</option></select></label>
+              <button class="primary-button" id="assetSubmit" type="submit">Add asset</button>
+              <button class="small-button edit-cancel" id="cancelAssetEdit" type="button">Cancel</button>
+            </form>
+            <div class="account-list" id="assetList"></div>
+          </article>
+
+          <article class="card account-panel">
+            <div class="card-title-row">
+              <div>
+                <span class="eyebrow">What you owe</span>
+                <h2>Liabilities <span class="heading-total" id="liabilityHeadingTotal">$0</span></h2>
+              </div>
+              <span class="account-badge liability">−</span>
+            </div>
+            <form class="account-form" id="liabilityForm">
+              <label>Liability name<input name="name" required placeholder="e.g. Student loan"></label>
+              <label>Current balance<input name="amount" type="number" min="0" step="0.01" required placeholder="0.00"></label>
+              <label>Category<select name="category"><option value="credit-cards">Credit Cards</option><option value="home-loans">Home Loans</option><option value="auto-loans">Auto Loans</option><option value="personal-loans">Personal Loans</option></select></label>
+              <button class="primary-button" id="liabilitySubmit" type="submit">Add liability</button>
+              <button class="small-button edit-cancel" id="cancelLiabilityEdit" type="button">Cancel</button>
+            </form>
+            <div class="account-list" id="liabilityList"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="billsView">
+        <div class="section-heading flush">
+          <div>
+            <span class="eyebrow">Stay ahead</span>
+            <h2>Bill due-date reminders</h2>
+          </div>
+        </div>
+        <article class="card">
+          <form class="wide-inline-form bill-form" id="billForm">
+            <label>Bill name<input name="name" required placeholder="Electricity"></label>
+            <label>Amount<input name="amount" type="number" min="0" step="0.01" required placeholder="0.00"></label>
+            <label>Due date<input name="date" type="date" required></label>
+            <button class="primary-button" id="billSubmit" type="submit">Add reminder</button>
+            <button class="small-button edit-cancel" id="cancelBillEdit" type="button">Cancel</button>
+          </form>
+        </article>
+        <div class="bill-board" id="billBoard"></div>
+      </section>
+
+      <section class="view" id="reportsView">
+        <div class="section-heading flush">
+          <div>
+            <span class="eyebrow">The complete picture</span>
+            <h2>Financial snapshot report</h2>
+          </div>
+          <button class="primary-button" id="printReport">Print report</button>
+        </div>
+        <article class="report-sheet" id="reportSheet">
+          <div class="report-header">
+            <div><span class="eyebrow">Northstar report</span><h2 id="reportDate"></h2></div>
+            <div class="report-score"><span>Financial score</span><strong id="financialScore">0</strong></div>
+          </div>
+          <div class="report-metrics" id="reportMetrics"></div>
+          <div class="report-grid">
+            <div><h3>Progress highlights</h3><div id="reportHighlights"></div></div>
+            <div><h3>Next priorities</h3><div id="reportPriorities"></div></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="view" id="settingsView">
+        <div class="section-heading flush">
+          <div>
+            <span class="eyebrow">Make it yours</span>
+            <h2>Settings</h2>
+          </div>
+          <span class="settings-saved" id="settingsStatus">Changes save automatically</span>
+        </div>
+
+        <div class="settings-layout">
+          <nav class="settings-nav" id="settingsNav" aria-label="Settings sections">
+            <button class="settings-nav-item active" data-settings-panel="general">General</button>
+            <button class="settings-nav-item" data-settings-panel="financial">Financial preferences</button>
+            <button class="settings-nav-item" data-settings-panel="categories">Categories</button>
+            <button class="settings-nav-item" data-settings-panel="planning">Goals & planning</button>
+            <button class="settings-nav-item" data-settings-panel="notifications">Notifications</button>
+            <button class="settings-nav-item" data-settings-panel="privacy">Data & privacy</button>
+            <button class="settings-nav-item" data-settings-panel="analytics">Reports & analytics</button>
+            <button class="settings-nav-item" data-settings-panel="integrations">Integrations</button>
+            <button class="settings-nav-item" data-settings-panel="health">Health score</button>
+            <button class="settings-nav-item" data-settings-panel="advanced">Advanced</button>
+          </nav>
+
+          <div class="settings-content">
+            <section class="settings-panel active" data-panel="general">
+              <div class="settings-heading"><span class="eyebrow">Personalization</span><h2>General settings</h2><p>Shape the app around your household, schedule, and preferred way of viewing money.</p></div>
+              <form class="settings-form" id="generalSettingsForm">
+                <div class="settings-group">
+                  <h3>App branding</h3>
+                  <label>App name<input name="appName" maxlength="28" placeholder="Northstar"></label>
+                  <div class="branding-upload">
+                    <div class="logo-preview" id="logoPreview"><span>N</span><img alt="Logo preview"></div>
+                    <div>
+                      <strong>App logo</strong>
+                      <small>Upload a square PNG, JPG, WebP, or SVG. It stays on this device.</small>
+                      <div class="settings-actions"><label class="upload-button">Choose logo<input id="logoUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"></label><button class="small-button" id="removeLogo" type="button">Remove logo</button></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="settings-group">
+                  <h3>Profile</h3>
+                  <div class="form-row">
+                    <label>Your name<input name="name" placeholder="Your name"></label>
+                    <label>Household size<input name="householdSize" type="number" min="1" max="20"></label>
+                  </div>
+                  <label>Financial life stage
+                    <select name="lifeStage"><option>Single</option><option>Supporting a family</option><option>Building a career</option><option>Preparing for retirement</option><option>Retired</option></select>
+                  </label>
+                </div>
+                <div class="settings-group">
+                  <h3>Regional preferences</h3>
+                  <div class="form-row">
+                    <label>Currency<select name="currency"><option value="USD">USD - US Dollar</option><option value="CAD">CAD - Canadian Dollar</option><option value="GBP">GBP - British Pound</option><option value="EUR">EUR - Euro</option><option value="AUD">AUD - Australian Dollar</option><option value="JPY">JPY - Japanese Yen</option></select></label>
+                    <label>Date format<select name="dateFormat"><option value="mdy">Month / Day / Year</option><option value="dmy">Day / Month / Year</option><option value="ymd">Year / Month / Day</option></select></label>
+                  </div>
+                  <label>Budget cycle<select name="budgetCycle"><option value="monthly">Monthly</option><option value="biweekly">Biweekly</option><option value="weekly">Weekly</option></select></label>
+                </div>
+                <div class="settings-group">
+                  <h3>Appearance</h3>
+                  <div class="choice-grid">
+                    <label class="choice-card"><input type="radio" name="theme" value="light"><span>Light</span><small>Bright and calm</small></label>
+                    <label class="choice-card"><input type="radio" name="theme" value="dark"><span>Dark</span><small>Lower-light viewing</small></label>
+                    <label class="choice-card"><input type="radio" name="theme" value="auto"><span>Automatic</span><small>Follow your device</small></label>
+                  </div>
+                  <h3 class="settings-subheading">Overview layout</h3>
+                  <p class="setting-help">Choose which widgets appear and arrange their order within the overview.</p>
+                  <div class="overview-widget-list" id="overviewWidgetList"></div>
+                  <h3 class="settings-subheading">Section views</h3>
+                  <p class="setting-help">Adjust how dense the app feels and how section-specific lists are arranged.</p>
+                  <div class="form-row">
+                    <label>App-wide section density
+                      <select name="sectionDensity">
+                        <option value="comfortable">Comfortable cards</option>
+                        <option value="compact">Compact cards</option>
+                      </select>
+                    </label>
+                    <label>Expense log view
+                      <select name="expenseLogView">
+                        <option value="list">Single list</option>
+                        <option value="pay-period-columns">Two columns by pay period</option>
+                        <option value="compact">Compact checklist</option>
+                      </select>
+                    </label>
+                  </div>
+                  <h3 class="settings-subheading">Section tabs</h3>
+                  <p class="setting-help">Choose which sections appear in the app menu and move them into your preferred order.</p>
+                  <div class="section-tab-list" id="sectionTabList"></div>
+                  <h3 class="settings-subheading">Color palette</h3>
+                  <div class="color-settings-grid">
+                    <label>Primary accent<input name="accentColor" type="color"></label>
+                    <label>Secondary accent<input name="secondaryColor" type="color"></label>
+                    <label>Page background<input name="backgroundColor" type="color"></label>
+                    <label>Card background<input name="cardColor" type="color"></label>
+                  </div>
+                  <h3 class="settings-subheading">Dollar value colors</h3>
+                  <div class="color-settings-grid">
+                    <label>Standard values<input name="moneyColor" type="color"></label>
+                    <label>Income values<input name="incomeColor" type="color"></label>
+                    <label>Liability & debt<input name="debtColor" type="color"></label>
+                  </div>
+                  <button class="small-button palette-reset" id="resetPalette" type="button">Restore default colors</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="settings-panel" data-panel="financial">
+              <div class="settings-heading"><span class="eyebrow">Your money style</span><h2>Financial preferences</h2><p>Choose the methods and targets that guide planning recommendations.</p></div>
+              <form class="settings-form" id="financialSettingsForm">
+                <div class="settings-group"><h3>Income preferences</h3><div class="form-row"><label>Typical pay frequency<select name="incomeFrequency"><option value="weekly">Weekly</option><option value="biweekly">Biweekly</option><option value="semimonthly">Twice monthly</option><option value="monthly">Monthly</option><option value="variable">Variable / contract</option></select></label><label>Expected monthly income<input name="expectedIncome" type="number" min="0" step="100"></label></div><p class="setting-help">You can track as many individual income sources as needed in the Income tab.</p></div>
+                <div class="settings-group"><h3>Budgeting method</h3><label>Preferred methodology<select name="budgetMethod"><option value="custom">Custom</option><option value="zero">Zero-based budgeting</option><option value="503020">50 / 30 / 20 rule</option><option value="envelope">Envelope system</option></select></label><p class="setting-help" id="budgetMethodHelp"></p></div>
+                <div class="settings-group"><h3>Savings preferences</h3><div class="form-row"><label>Target savings rate %<input name="savingsTarget" type="number" min="0" max="100"></label><label>Emergency fund target (months)<input name="emergencyMonths" type="number" min="1" max="24"></label></div><label class="toggle-row"><span><strong>Automatic savings allocation</strong><small>Show savings as a priority in recommendations</small></span><input name="autoSavings" type="checkbox"></label></div>
+                <div class="settings-group"><h3>Debt strategy</h3><div class="choice-grid"><label class="choice-card"><input type="radio" name="debtMethod" value="snowball"><span>Snowball</span><small>Smallest balance first</small></label><label class="choice-card"><input type="radio" name="debtMethod" value="avalanche"><span>Avalanche</span><small>Highest APR first</small></label><label class="choice-card"><input type="radio" name="debtMethod" value="custom"><span>Custom</span><small>Your own order</small></label></div></div>
+              </form>
+            </section>
+
+            <section class="settings-panel" data-panel="categories">
+              <div class="settings-heading"><span class="eyebrow">Organization</span><h2>Categories management</h2><p>Create categories that match the way you actually live and earn.</p></div>
+              <form class="category-settings-form" id="categoryForm">
+                <label>Category name<input name="name" required placeholder="e.g. Childcare"></label>
+                <label>Type<select name="type"><option value="expense">Expense</option><option value="income">Income</option></select></label>
+                <label>Color<input name="color" type="color" value="#2c7658"></label>
+                <button class="primary-button" type="submit">Add category</button>
+              </form>
+              <div class="managed-category-list" id="managedCategoryList"></div>
+            </section>
+
+            <section class="settings-panel" data-panel="planning">
+              <div class="settings-heading"><span class="eyebrow">Long-range assumptions</span><h2>Goals & planning</h2><p>Fine-tune the assumptions used for emergency savings, retirement, and net worth.</p></div>
+              <form class="settings-form" id="planningSettingsForm">
+                <div class="settings-group"><h3>Retirement assumptions</h3><div class="form-row"><label>Target retirement age<input name="retireAge" type="number" min="19" max="100"></label><label>Expected return %<input name="returnRate" type="number" min="0" max="20" step="0.1"></label></div><label>Expected inflation %<input name="inflation" type="number" min="0" max="15" step="0.1"></label></div>
+                <div class="settings-group"><h3>Net worth snapshot</h3><label class="toggle-row"><span><strong>Include vehicle values</strong><small>Count assets with names containing vehicle, auto, or car</small></span><input name="includeVehicles" type="checkbox"></label><label class="toggle-row"><span><strong>Include investment accounts</strong><small>Count investment and retirement assets</small></span><input name="includeInvestments" type="checkbox"></label></div>
+              </form>
+            </section>
+
+            <section class="settings-panel" data-panel="notifications">
+              <div class="settings-heading"><span class="eyebrow">Stay proactive</span><h2>Notifications & reminders</h2><p>Choose which moments deserve your attention.</p></div>
+              <form class="settings-form" id="notificationSettingsForm">
+                <div class="settings-group">
+                  <label class="toggle-row"><span><strong>Upcoming bill reminders</strong><small>Highlight bills approaching their due date</small></span><input name="billReminders" type="checkbox"></label>
+                  <label class="toggle-row"><span><strong>Budget limit alerts</strong><small>Warn when category spending approaches its limit</small></span><input name="budgetAlerts" type="checkbox"></label>
+                  <label class="toggle-row"><span><strong>Savings milestones</strong><small>Celebrate meaningful goal progress</small></span><input name="savingsMilestones" type="checkbox"></label>
+                  <label class="toggle-row"><span><strong>Overspending alerts</strong><small>Surface categories that exceed their plan</small></span><input name="overspending" type="checkbox"></label>
+                </div>
+                <div class="settings-group"><h3>Financial summaries</h3><label>Summary frequency<select name="summaryFrequency"><option value="off">Off</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></label><label>Reminder lead time<select name="billLeadDays"><option value="3">3 days</option><option value="7">7 days</option><option value="14">14 days</option></select></label></div>
+              </form>
+            </section>
+
+            <section class="settings-panel" data-panel="privacy">
+              <div class="settings-heading"><span class="eyebrow">Your information</span><h2>Data & privacy</h2><p>Your financial data stays in this browser unless you choose to export it.</p></div>
+              <form class="settings-form" id="privacySettingsForm">
+                <div class="settings-group"><label class="toggle-row"><span><strong>Hide sensitive balances</strong><small>Mask money amounts throughout the app</small></span><input name="hideBalances" type="checkbox"></label><label>Automatic logout<select name="autoLogout"><option value="off">Off</option><option value="5">After 5 minutes</option><option value="15">After 15 minutes</option><option value="30">After 30 minutes</option></select></label><label>PIN protection<input type="text" disabled value="Planned for a secure mobile release"></label></div>
+              </form>
+              <div class="sync-panel">
+                <div>
+                  <span class="eyebrow">Device sync</span>
+                  <h3>Share one finance file between browsers</h3>
+                  <p>Export the newest data from this device, save or share the file, then import that file on your phone, tablet, or another browser to update it.</p>
+                </div>
+                <div class="sync-meta" id="syncStatus">
+                  <div><span>Last saved</span><strong id="syncLastSaved">Not yet</strong></div>
+                  <div><span>Last exported</span><strong id="syncLastExported">Never</strong></div>
+                  <div><span>Last imported</span><strong id="syncLastImported">Never</strong></div>
+                </div>
+                <div class="settings-actions sync-actions">
+                  <button class="primary-button" id="exportData" type="button">Export update file</button>
+                  <button class="small-button" id="shareData" type="button">Share file</button>
+                  <label class="upload-button">Import update file<input id="importData" type="file" accept=".json,application/json"></label>
+                  <button class="small-button" id="exportCsv" type="button">Export transactions CSV</button>
+                </div>
+                <p class="setting-help">Importing replaces the local data in this browser with the selected file. You will be asked to confirm first.</p>
+              </div>
+            </section>
+
+            <section class="settings-panel" data-panel="analytics">
+              <div class="settings-heading"><span class="eyebrow">Insight preferences</span><h2>Reports & analytics</h2><p>Control the defaults used for financial snapshots and exports.</p></div>
+              <form class="settings-form" id="analyticsSettingsForm">
+                <div class="settings-group"><div class="form-row"><label>Reporting period<select name="reportPeriod"><option value="month">Current month</option><option value="quarter">Current quarter</option><option value="year">Current year</option></select></label><label>Default chart style<select name="chartStyle"><option value="line">Line</option><option value="bar">Bar</option><option value="area">Area</option></select></label></div><label>Preferred export format<select name="exportFormat"><option value="pdf">PDF</option><option value="csv">CSV</option><option value="json">JSON backup</option></select></label><label class="toggle-row"><span><strong>Enable tax tagging</strong><small>Allow expenses to be marked for future tax review</small></span><input name="taxTagging" type="checkbox"></label></div>
+              </form>
+            </section>
+
+            <section class="settings-panel" data-panel="integrations">
+              <div class="settings-heading"><span class="eyebrow">Optional connections</span><h2>Integrations</h2><p>Connections are prepared for future secure account syncing. Nothing is transmitted today.</p></div>
+              <div class="integration-list">
+                <div class="integration-row"><span class="integration-icon">BK</span><div><strong>Bank accounts & credit cards</strong><small>Automatically import balances and transactions</small></div><button class="small-button" disabled>Coming soon</button></div>
+                <div class="integration-row"><span class="integration-icon">IV</span><div><strong>Investment platforms</strong><small>Keep retirement and brokerage values current</small></div><button class="small-button" disabled>Coming soon</button></div>
+                <div class="integration-row"><span class="integration-icon">HM</span><div><strong>Mortgage providers</strong><small>Track principal balances and payoff progress</small></div><button class="small-button" disabled>Coming soon</button></div>
+                <div class="integration-row"><span class="integration-icon">CR</span><div><strong>Credit monitoring</strong><small>Add credit health to the financial snapshot</small></div><button class="small-button" disabled>Coming soon</button></div>
+                <div class="integration-row"><span class="integration-icon">CL</span><div><strong>Encrypted cloud sync</strong><small>Keep approved devices in sync</small></div><button class="small-button" disabled>Coming soon</button></div>
+              </div>
+            </section>
+
+            <section class="settings-panel" data-panel="health">
+              <div class="settings-heading"><span class="eyebrow">Personal priorities</span><h2>Financial health score</h2><p>Set what matters most. Your report score will adapt to these priorities.</p></div>
+              <form class="settings-form" id="healthSettingsForm">
+                <div class="settings-group health-sliders">
+                  <label>Reduce debt <output id="debtWeightOutput"></output><input name="debtWeight" type="range" min="0" max="100"></label>
+                  <label>Grow savings <output id="savingsWeightOutput"></output><input name="savingsWeight" type="range" min="0" max="100"></label>
+                  <label>Increase net worth <output id="netWorthWeightOutput"></output><input name="netWorthWeight" type="range" min="0" max="100"></label>
+                  <label>Build emergency fund <output id="emergencyWeightOutput"></output><input name="emergencyWeight" type="range" min="0" max="100"></label>
+                  <p class="setting-help">Weights are normalized automatically, so they do not need to total 100.</p>
+                </div>
+              </form>
+            </section>
+
+            <section class="settings-panel" data-panel="advanced">
+              <div class="settings-heading"><span class="eyebrow">Maintenance</span><h2>Advanced settings</h2><p>Tools for cleanup, troubleshooting, and starting fresh.</p></div>
+              <div class="advanced-grid">
+                <div class="advanced-action"><div><strong>Restore previous version</strong><small>Return to the data saved immediately before your most recent change</small></div><button class="small-button" id="restorePrevious">Restore</button></div>
+                <div class="advanced-action"><div><strong>Archive older transactions</strong><small>Remove transactions older than one year from the active view</small></div><button class="small-button" id="archiveTransactions">Archive</button></div>
+                <div class="advanced-action"><div><strong>Optimize local data</strong><small>Clean and re-save app data in this browser</small></div><button class="small-button" id="optimizeData">Optimize</button></div>
+                <div class="advanced-action"><div><strong>Troubleshooting details</strong><small>Show a summary of locally stored records</small></div><button class="small-button" id="showDiagnostics">View details</button></div>
+                <div class="advanced-action danger"><div><strong>Reset sample data</strong><small>Replace current information with the original demo plan. Confirmation is required.</small></div><button class="small-button" id="advancedReset">Reset data</button></div>
+              </div>
+              <pre class="diagnostics" id="diagnostics"></pre>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="calculatorView">
+        <div class="section-heading flush">
+          <div>
+            <span class="eyebrow">Plan scenarios</span>
+            <h2>Financial calculator</h2>
+          </div>
+        </div>
+        <div class="calculator-layout">
+          <article class="card calculator-controls">
+            <label>Calculation type
+              <select id="calculatorType">
+                <option value="compound">Compound interest</option>
+                <option value="savings">Savings goal</option>
+                <option value="loan">Loan payment</option>
+                <option value="retirement">Retirement projection</option>
+              </select>
+            </label>
+            <form id="calculatorForm">
+              <div id="calculatorFields"></div>
+              <button class="primary-button wide" type="submit">Calculate</button>
+            </form>
+          </article>
+          <article class="calculator-result">
+            <span class="eyebrow light" id="calculatorResultLabel">Future value</span>
+            <strong id="calculatorResult">$0</strong>
+            <p id="calculatorResultDescription">Configure a scenario and calculate the result.</p>
+            <div class="calculator-breakdown" id="calculatorBreakdown"></div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <button class="sidebar-backdrop" id="sidebarBackdrop" type="button" aria-label="Close navigation"></button>
+
+  <nav class="mobile-nav" aria-label="Mobile navigation">
+    <button class="mobile-nav-item active" type="button" data-mobile-view="dashboard" aria-label="Overview">
+      <span class="mobile-nav-icon">H</span><span>Home</span>
+    </button>
+    <button class="mobile-nav-item" type="button" data-mobile-view="income" aria-label="Income">
+      <span class="mobile-nav-icon">$</span><span>Income</span>
+    </button>
+    <button class="mobile-nav-item mobile-nav-action" type="button" id="mobileAddTransaction" aria-label="Add transaction">
+      <span class="mobile-nav-add">+</span><span>Add</span>
+    </button>
+    <button class="mobile-nav-item" type="button" data-mobile-view="expenses" aria-label="Expenses">
+      <span class="mobile-nav-icon">E</span><span>Expenses</span>
+    </button>
+    <button class="mobile-nav-item" type="button" id="mobileMore" aria-label="Open more sections" aria-controls="appSidebar" aria-expanded="false">
+      <span class="mobile-nav-icon">...</span><span>More</span>
+    </button>
+  </nav>
+
+  <div class="modal-backdrop" id="transactionModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="transactionTitle">
+      <button class="modal-close" data-close="transactionModal" aria-label="Close">×</button>
+      <span class="eyebrow">New activity</span>
+      <h2 id="transactionTitle">Add a transaction</h2>
+      <form id="transactionForm">
+        <label>Description<input name="name" required placeholder="e.g. Grocery run"></label>
+        <div class="form-row">
+          <label>Amount<input name="amount" type="number" min="0.01" step="0.01" required placeholder="0.00"></label>
+          <label>Type
+            <select name="type"><option value="expense">Expense</option><option value="income">Income</option></select>
+          </label>
+        </div>
+        <div class="form-row">
+          <label>Category
+            <select name="category">
+              <option>Housing</option><option>Food</option><option>Transport</option>
+              <option>Lifestyle</option><option>Health</option><option>Income</option><option>Other</option>
+            </select>
+          </label>
+          <label>Date<input name="date" type="date" required></label>
+        </div>
+        <button class="primary-button wide" id="transactionSubmit" type="submit">Save transaction</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="goalModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="goalTitle">
+      <button class="modal-close" data-close="goalModal" aria-label="Close">×</button>
+      <span class="eyebrow">Build the future</span>
+      <h2 id="goalTitle">Create a savings goal</h2>
+      <form id="goalForm">
+        <label>Goal name<input name="name" required placeholder="e.g. Dream trip"></label>
+        <div class="form-row">
+          <label>Target<input name="target" type="number" min="1" required placeholder="10000"></label>
+          <label>Saved so far<input name="saved" type="number" min="0" required value="0"></label>
+        </div>
+        <label>Target date<input name="date" type="date" required></label>
+        <button class="primary-button wide" id="goalSubmit" type="submit">Create goal</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="budgetModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="budgetTitle">
+      <button class="modal-close" data-close="budgetModal" aria-label="Close">×</button>
+      <span class="eyebrow">Set a guardrail</span>
+      <h2 id="budgetTitle">Add a monthly budget</h2>
+      <form id="budgetForm">
+        <label>Category<input name="name" required placeholder="e.g. Entertainment"></label>
+        <div class="form-row">
+          <label>Monthly limit<input name="limit" type="number" min="1" required placeholder="300"></label>
+          <label>Already spent<input name="spent" type="number" min="0" required value="0"></label>
+        </div>
+        <button class="primary-button wide" id="budgetSubmit" type="submit">Add budget</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
